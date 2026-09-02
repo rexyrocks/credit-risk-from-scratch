@@ -20,8 +20,19 @@ The dataset is imbalanced: only ~6.7% of borrowers are actual defaults.
 ├── logistic_regression.py   # Core model class — sigmoid, cost, gradient, fit, predict, L1/L2 regularization
 ├── preprocessing.py         # Missing-value cleaning, feature scaling, train-test split (all from scratch)
 ├── train.py                 # Trains the model on the processed data
-├── evaluate.py               # Metrics, threshold tuning, sklearn comparison
-├── requirements.txt
+├── evaluate.py              # Metrics, threshold tuning, sklearn comparison
+├── backend/                 # FastAPI API — serves both models for predictions
+│   ├── main.py              # App startup, /predict, /metrics endpoints
+│   ├── schemas.py           # Pydantic request/response validation
+│   └── requirements.txt
+├── frontend/                # React + Vite + Tailwind CSS v4
+│   ├── src/
+│   │   ├── App.jsx          # Main layout with tabs
+│   │   ├── api.js           # API client
+│   │   └── components/      # PredictionForm, ResultsPanel, ModelPerformance, About
+│   └── vite.config.js
+├── docker-compose.yml       # One-command local demo
+├── WEBAPP.md                # Web app setup instructions
 └── README.md
 ```
 
@@ -69,7 +80,32 @@ Because the dataset is imbalanced, the default 0.5 threshold is overly conservat
 
 Best F1 occurs around **threshold ≈ 0.16**, balancing catching real defaults against false alarms.
 
-## Setup
+## Web App
+
+An interactive web interface lets you submit borrower profiles and see predictions from both models side-by-side, along with charts visualising the threshold sweep and model comparison.
+
+**🔗 Live demo:** [frontend-rose-eight-31.vercel.app](https://frontend-rose-eight-31.vercel.app)
+
+> **Note:** The Vercel deployment hosts the frontend only. To get live predictions, run the FastAPI backend locally — see [WEBAPP.md](WEBAPP.md) for setup instructions.
+
+### Running locally
+
+```bash
+# Terminal 1 — Backend (from project root)
+pip install -r backend/requirements.txt
+python -m uvicorn backend.main:app --reload
+
+# Terminal 2 — Frontend
+cd frontend && npm install && npm run dev
+```
+
+Or with Docker:
+
+```bash
+docker-compose up --build
+```
+
+## Setup (core pipeline only)
 
 ```bash
 pip install -r requirements.txt
@@ -85,4 +121,4 @@ python evaluate.py
 
 ## Status
 
-Core pipeline (preprocessing → training → evaluation → sklearn validation) complete.
+Core pipeline (preprocessing → training → evaluation → sklearn validation) complete. Full-stack web app deployed to Vercel.

@@ -3,7 +3,9 @@
  * Base URL defaults to localhost:8000 for local development.
  */
 
-const API_BASE = "http://localhost:8000";
+// In production (Vercel), set VITE_API_URL to the deployed backend URL.
+// Locally it falls back to the FastAPI dev server.
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 /**
  * POST /predict
