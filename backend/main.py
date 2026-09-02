@@ -200,10 +200,15 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Allow the Vite dev-server and common local origins
+# Allow the Vite dev-server, common local origins, and the deployed Vercel frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173"],
+    allow_origins=[
+        "http://localhost:5173", 
+        "http://localhost:3000", 
+        "http://127.0.0.1:5173",
+        "https://frontend-rose-eight-31.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
