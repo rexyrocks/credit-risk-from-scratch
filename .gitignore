@@ -8,8 +8,9 @@ __pycache__/
 venv/
 .venv/
 
-# Backend cache (trained models — regenerated on first run)
-backend/cache/
+# Backend cache (trained models)
+# We track models.joblib in git because Render Free tier spins down often.
+# Training on startup takes too long and may hit memory limits.
 
 # Data files (too large for git — download from Kaggle)
 # data/*.csv
