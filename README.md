@@ -86,7 +86,7 @@ An interactive web interface lets you submit borrower profiles and see predictio
 
 **🔗 Live demo:** [frontend-rose-eight-31.vercel.app](https://frontend-rose-eight-31.vercel.app)
 
-> **Note:** The Vercel deployment hosts the frontend only. The FastAPI backend is configured for deployment on [Render](https://render.com/) via the included `render.yaml` Blueprint. To test locally, you can still run the backend — see [WEBAPP.md](WEBAPP.md) for setup instructions.
+> **Note:** The Vercel deployment hosts the frontend only. The FastAPI backend can be deployed manually on [Render](https://render.com/) as a free Web Service. To test locally, you can still run the backend — see [WEBAPP.md](WEBAPP.md) for setup instructions.
 
 ### Running locally
 
