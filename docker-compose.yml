@@ -1,0 +1,35 @@
+# ---------------------------------------------------------------
+# docker-compose.yml — runs both backend and frontend for a
+# one-command local demo.
+#
+# Usage:
+#   docker-compose up --build
+#
+# Backend:  http://localhost:8000
+# Frontend: http://localhost:5173
+# ---------------------------------------------------------------
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data:ro          # read-only bind to the dataset
+      - backend-cache:/app/backend/cache  # persist trained models
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  backend-cache:

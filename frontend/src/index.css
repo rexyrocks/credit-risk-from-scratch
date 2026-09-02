@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   Design tokens — neutral slate palette with indigo accents
+   Inter font loaded from Google Fonts in index.html
+   --------------------------------------------------------------- */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand colours */
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+
+  /* Semantic */
+  --color-risk-low: #22c55e;
+  --color-risk-high: #ef4444;
+  --color-risk-low-bg: #f0fdf4;
+  --color-risk-high-bg: #fef2f2;
+}
+
+/* ---------------------------------------------------------------
+   Base resets
+   --------------------------------------------------------------- */
+body {
+  @apply bg-slate-50 text-slate-800 antialiased;
+  font-family: var(--font-sans);
+}
+
+/* ---------------------------------------------------------------
+   Utilities for the gauge / probability bars
+   --------------------------------------------------------------- */
+.prob-bar {
+  @apply h-3 rounded-full transition-all duration-700 ease-out;
+}
+
+/* ---------------------------------------------------------------
+   Tab active indicator
+   --------------------------------------------------------------- */
+.tab-active {
+  @apply border-b-2 border-brand-600 text-brand-600 font-semibold;
+}
+.tab-inactive {
+  @apply border-b-2 border-transparent text-slate-500 hover:text-slate-700;
+}
+
+/* ---------------------------------------------------------------
+   Highlight row in the threshold sweep table
+   --------------------------------------------------------------- */
+.row-optimal {
+  @apply bg-brand-50 font-semibold;
+}
