@@ -38,10 +38,10 @@ class logisitic_regressionScratch:
             dw,db = self.compute_gradient(X,y)
             self.w = self.w - dw*self.lr
             self.b = self.b - db * self.lr
-    def predict_phobia(self,X):
-        z =np.dot(self.w, X)+ self.b 
+    def predict_proba(self,X):
+        z =np.dot(X,self.w)+ self.b 
         return self.sigmoid(z)       
     def predict(self,X,threshold = 0.5):
-        y_phoba = self.predict_phobia(X)
-        return (y_phoba >= threshold).astype(int)
+        y_proba = self.predict_proba(X)
+        return (y_proba >= threshold).astype(int)
     

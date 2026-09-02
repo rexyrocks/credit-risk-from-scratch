@@ -27,11 +27,11 @@ if __name__ == "__main__":
     df = cleandata(df)
     print(df.isnull().sum())
     
-    y = df["SeriousDlqin2yrs"].values          # ✅ yahan bhi indent
+    y = df["SeriousDlqin2yrs"].values        
     X = df.drop(columns=["SeriousDlqin2yrs"]).values
     
     X_scaled, mean, std = scalefeature(X)
     X_train, X_test, y_train, y_test = train_test_split(X_scaled, y)
     
-    print("X_train:", X_train.shape)            # ✅ yeh bhi add kar, warna kuch print hi nahi hoga
+    print("X_train:", X_train.shape)         
     print("X_test:", X_test.shape)
