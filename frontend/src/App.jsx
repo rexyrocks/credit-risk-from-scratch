@@ -27,12 +27,9 @@ export default function App() {
           {/* Title row */}
           <div className="flex items-center justify-between py-4">
             <div>
-              <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-                Credit Risk Predictor
+              <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
+                RiskSight <span className="font-normal text-gray-400 ml-2 hidden sm:inline-block">From-Scratch Credit Risk AI</span>
               </h1>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Logistic regression from scratch — vs sklearn benchmark
-              </p>
             </div>
 
             {/* Status badge */}

@@ -1,4 +1,4 @@
-# Credit Risk Prediction — Logistic Regression from Scratch
+# RiskSight: Credit Risk Prediction from Scratch
 
 A from-scratch implementation of logistic regression (no `sklearn.fit()` shortcuts) to predict loan default / credit risk, with the math — gradient descent, cost function, L1/L2 regularization — derived and coded manually. `sklearn` is used only afterward, as a benchmark to validate correctness.
 
