@@ -53,12 +53,12 @@ from sklearn.linear_model import LogisticRegression as SklearnLR
 # ---------------------------------------------------------------------------
 DATA_PATH = PROJECT_ROOT / "data" / "cs-training.csv"
 CACHE_DIR = pathlib.Path(__file__).resolve().parent / "cache"
-DEFAULT_THRESHOLD = 0.16
+DEFAULT_THRESHOLD = 0.70
 
 # Thresholds for the sweep — includes the README set plus intermediate
 # values requested by the user for a smoother chart.
 SWEEP_THRESHOLDS = sorted(
-    [0.50, 0.40, 0.30, 0.25, 0.20, 0.18, 0.16, 0.14, 0.12, 0.10, 0.08],
+    [0.90, 0.80, 0.70, 0.60, 0.50, 0.40, 0.30, 0.25, 0.20, 0.18, 0.16, 0.14, 0.12, 0.10, 0.08],
     reverse=True,
 )
 
@@ -101,7 +101,7 @@ def _train_and_cache() -> dict:
     # --- scratch model ---
     print("[startup] Training scratch model (1 000 iterations) …")
     scratch = logisitic_regressionScratch(learning_rate=0.01, n_iterations=1000)
-    scratch.fit(X_train, y_train)
+    scratch.fit(X_train, y_train, class_weight="balanced")
 
     # --- sklearn model ---
     print("[startup] Training sklearn model …")
