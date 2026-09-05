@@ -22,7 +22,7 @@ if __name__ == "__main__":
     X_scaled ,mean ,std = scalefeature(x)
     X_train , X_test , Y_train , Y_test = train_test_split(X_scaled,y)
     model = logisitic_regressionScratch(learning_rate=0.01 , n_iterations= 1000)
-    model.fit(X_train,Y_train)
+    model.fit(X_train,Y_train,class_weight="balanced")
     test_preds = model.predict(X_test)
     TP , TN , FP , FN = confusematrix_compenents(Y_test,test_preds)
     accuracy , preicision , recall ,f1 = compute_metrics(TP,TN,FP,FN)
@@ -34,17 +34,31 @@ if __name__ == "__main__":
     print("recall " , recall)
     print("f1 " , f1)
     print("precision " ,preicision)
-    print("\n--- Threshold Tuning ---")
-    for t in [0.5, 0.4, 0.3, 0.2, 0.1, 0.05]:
-            preds_t = model.predict(X_test, threshold=t)
-            TP_t, TN_t, FP_t, FN_t = confusematrix_compenents(Y_test, preds_t)
-            acc_t, prec_t, rec_t, f1_t = compute_metrics(TP_t, TN_t, FP_t, FN_t)
-            print(f"Threshold {t}: Precision={prec_t:.3f}, Recall={rec_t:.3f}, F1={f1_t:.3f}")
-    for t in [0.20, 0.18, 0.16, 0.14, 0.12, 0.10]:
-           preds_t = model.predict(X_test, threshold=t)
-           TP_t, TN_t, FP_t, FN_t = confusematrix_compenents(Y_test, preds_t)
-           acc_t, prec_t, rec_t, f1_t = compute_metrics(TP_t, TN_t, FP_t, FN_t)
-           print(f"Threshold {t}: Precision={prec_t:.3f}, Recall={rec_t:.3f}, F1={f1_t:.3f}")
+    print("\n--- Threshold Tuning (Prioritizing Money) ---")
+    thresholds = np.arange(0.1, 1.0, 0.1)
+    best_profit = -np.inf
+    best_t_profit = 0
+    
+    # Assumptions for monetary calculation
+    # Granting loan to a good customer (TN) earns interest, e.g., $1,000
+    # Granting loan to a bad customer (FN) loses principal, e.g., $5,000
+    # Denying a loan (TP, FP) yields $0
+    revenue_per_tn = 1000
+    loss_per_fn = 5000
+
+    for t in thresholds:
+        preds_t = model.predict(X_test, threshold=t)
+        TP_t, TN_t, FP_t, FN_t = confusematrix_compenents(Y_test, preds_t)
+        acc_t, prec_t, rec_t, f1_t = compute_metrics(TP_t, TN_t, FP_t, FN_t)
+        
+        profit_t = (TN_t * revenue_per_tn) - (FN_t * loss_per_fn)
+        print(f"Threshold {t:.2f}: Profit = ${profit_t:,} (Recall={rec_t:.3f}, FP={FP_t}, FN={FN_t})")
+        
+        if profit_t > best_profit:
+            best_profit = profit_t
+            best_t_profit = t
+            
+    print(f"\nOptimal Threshold (by Profit): {best_t_profit:.2f} with Expected Profit=${best_profit:,}")
     from sklearn.linear_model import LogisticRegression
     sklearn_model = LogisticRegression()
     sklearn_model.fit(X_train, Y_train)

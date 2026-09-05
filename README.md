@@ -58,27 +58,30 @@ Evaluated on a held-out 20% test split (30,000 rows).
 
 | Model | Precision | Recall | F1 |
 |---|---|---|---|
-| Scratch implementation | 0.519 | 0.014 | 0.028 |
-| sklearn `LogisticRegression` | 0.524 | 0.039 | 0.072 |
+| Scratch implementation (with balanced class weights) | 0.104 | 0.673 | 0.180 |
+| sklearn `LogisticRegression` (default, no weights) | 0.524 | 0.039 | 0.072 |
 
-Precision is nearly identical between the two (0.519 vs 0.524), which validates that the from-scratch cost function and gradient derivation are mathematically correct. The recall/F1 gap is attributable to sklearn's more sophisticated solver (L-BFGS vs. vanilla gradient descent) rather than any error in the underlying math.
+By implementing `class_weight="balanced"` in our custom model, the recall dramatically improves from ~3.9% (Sklearn default) to ~67.3% at the standard 0.5 threshold, making it much better at actually catching defaults.
 
-### Threshold tuning
+### Threshold tuning (Prioritizing Monetary Profit)
 
-Because the dataset is imbalanced, the default 0.5 threshold is overly conservative — the model rarely predicts "default." Sweeping the decision threshold shows the precision/recall trade-off clearly:
+Because credit risk models are fundamentally about minimizing financial loss, we evaluated the model using a hypothetical profit matrix:
+- **True Negative** (Correctly granting a loan): Earns **$1,000** in interest.
+- **False Negative** (Granting a loan to a defaulter): Loses **$5,000** in principal.
+- **True Positive / False Positive** (Denying a loan): Yields **$0**.
 
-| Threshold | Precision | Recall | F1 |
-|---|---|---|---|
-| 0.50 | 0.519 | 0.014 | 0.028 |
-| 0.30 | 0.519 | 0.014 | 0.028 |
-| 0.20 | 0.492 | 0.016 | 0.031 |
-| 0.18 | 0.300 | 0.050 | 0.086 |
-| **0.16** | **0.132** | **0.372** | **0.194** |
-| 0.14 | 0.095 | 0.719 | 0.168 |
-| 0.12 | 0.074 | 0.949 | 0.137 |
-| 0.10 | 0.065 | 0.999 | 0.123 |
+Sweeping the decision threshold reveals how optimizing for money differs from optimizing for pure F1-score:
 
-Best F1 occurs around **threshold ≈ 0.16**, balancing catching real defaults against false alarms.
+| Threshold | Recall | False Positives | False Negatives | Expected Profit |
+|---|---|---|---|---|
+| 0.10 | 1.000 | 28,039 | 0 | $5,000 |
+| 0.30 | 0.982 | 26,015 | 35 | $1,854,000 |
+| 0.50 | 0.673 | 11,388 | 640 | $13,456,000 |
+| 0.60 | 0.346 | 3,548 | 1,280 | $18,096,000 |
+| **0.70** | **0.039** | **79** | **1,879** | **$18,570,000** |
+| 0.80 | 0.015 | 29 | 1,927 | $18,380,000 |
+
+Optimal expected profit occurs at **threshold = 0.70**. While it seems counter-intuitive to drop recall this low, the sheer volume of good customers (True Negatives) in the highly imbalanced dataset means that the extra interest earned from loosening the credit policy outweighs the additional default losses.
 
 ## Web App
 
@@ -114,8 +117,6 @@ python evaluate.py
 ```
 
 ## Limitations & Next Steps
-
-- Class imbalance is currently handled only via threshold tuning; class-weighted loss would likely improve recall further.
 - A single linear decision boundary limits performance on this problem relative to ensemble methods (e.g. gradient boosting), which are standard in production credit scoring.
 - Feature engineering (e.g. interaction terms) was not explored — the focus of this project was validating the from-scratch training pipeline, not maximizing leaderboard performance.
 
